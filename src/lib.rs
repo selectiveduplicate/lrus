@@ -32,17 +32,14 @@ where
     /// If the `key` already exists in the cache, 
     /// its corresponding value is updated.
     pub fn insert(&mut self, key: K, value: V) -> Option<K> {
+        let mut updated_list = LinkedList::new();
         // If the list contains this key, then put it as the
         // front (most recent) element and insert into storage.
-        // If the corresponding is value is new, it'll be updated.
-        if self.order.contains(&key) {
-            let mut updated_list = LinkedList::new();
-            //let mut found_index: Option<usize> = None;
-            let found_index = self.order.iter().enumerate().find(|(_, &element)| element == key).map(|found| found.0);
+        // If the corresponding is value is new, it'll be updated.;
+        if let Some(index) = self.order.iter().position(|&element| element == key) {
             updated_list.push_front(key);
-            
             // Update the list
-            let mut splitted_from_found = self.order.split_off(found_index.unwrap());
+            let mut splitted_from_found = self.order.split_off(index);
             splitted_from_found.pop_front();
             self.order.append(&mut splitted_from_found);
             updated_list.append(&mut self.order);
